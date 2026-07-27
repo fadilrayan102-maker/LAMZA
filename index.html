@@ -1,1 +1,141 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LAMZA - المعرض الرقمي فاس</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family: 'Tahoma', sans-serif; background:#fff; color:#000; line-height:1.6}
+    
+    header{text-align:center;padding:60px 20px;border-bottom:2px solid #000}
+    header h1{font-size: clamp(50px, 12vw, 120px); font-weight:900; letter-spacing:8px}
+    header p{font-size:20px;margin-top:10px;font-weight:600}
 
+    .section{padding:80px 20px; max-width:1200px; margin:auto}
+    .section h2{text-align:center; font-size:32px; margin-bottom:50px; border-bottom:3px solid #000; padding-bottom:15px}
+
+    .grid{display:grid; gap:30px}
+    .grid-6{grid-template-columns: repeat(auto-fit, minmax(250px, 1fr))}
+    .grid-3{grid-template-columns: repeat(auto-fit, minmax(280px, 1fr))}
+    .grid-5{grid-template-columns: repeat(auto-fit, minmax(220px, 1fr))}
+
+    .card{background:#fff; border:2px solid #000; border-radius:0; overflow:hidden; transition:0.3s}
+    .card:hover{box-shadow:8px 8px 0px #000; transform:translate(-4px, -4px)}
+    .card img{width:100%; height:350px; object-fit:cover; background:#f0f0f0; border-bottom:2px solid #000}
+    .card-info{padding:20px; text-align:center}
+    .card-info h3{font-size:20px; margin-bottom:8px}
+    .price{font-size:22px; font-weight:900; margin-bottom:15px}
+    
+    .btn-wa{
+      display:block; width:100%; padding:14px; background:#000; color:#fff; 
+      text-decoration:none; font-weight:800; font-size:16px; text-align:center;
+      transition:0.2s
+    }
+    .btn-wa:hover{background:#333}
+
+    footer{background:#000; color:#fff; text-align:center; padding:50px 20px; margin-top:60px}
+    footer p{margin:8px 0; font-size:16px}
+    .social{margin:25px 0}
+    .social a{color:#fff; text-decoration:none; margin:0 15px; font-weight:700; border-bottom:2px solid #fff}
+    .copy{margin-top:30px; font-size:14px; opacity:0.7}
+    .loading{text-align:center; font-size:18px; padding:40px; color:#888; grid-column: 1/-1}
+  </style>
+</head>
+<body>
+
+  <!-- القسم 1: الهيدر -->
+  <header>
+    <h1>LAMZA</h1>
+    <p>المعرض الرقمي - فاس</p>
+  </header>
+
+  <!-- القسم 2: ملابس انيقة لطهات -->
+  <section class="section">
+    <h2>ملابس انيقة لطهات</h2>
+    <div class="grid grid-6" id="chefs">
+      <div class="loading">كنحملو المنتجات من Google Sheets...</div>
+    </div>
+  </section>
+
+  <!-- القسم 3: تشكيلة جديدة لملابس الأطباء -->
+  <section class="section" style="background:#f5f5f5">
+    <h2>تشكيلة جديدة لملابس الأطباء</h2>
+    <div class="grid grid-3" id="doctors">
+      <div class="loading">كنحملو المنتجات من Google Sheets...</div>
+    </div>
+  </section>
+
+  <!-- القسم 4: ملابس مستر شاف -->
+  <section class="section">
+    <h2>ملابس مستر شاف</h2>
+    <div class="grid grid-5" id="masterchef">
+      <div class="loading">كنحملو المنتجات من Google Sheets...</div>
+    </div>
+  </section>
+
+  <!-- القسم 5: الفوتر -->
+  <footer>
+    <p><b>العنوان:</b> فاس</p>
+    <p><b>الهاتف:</b> 0611733175</p>
+    
+    <div class="social">
+      <p>للمزيد من التفاصيل زرنا على</p>
+      <a href="https://www.facebook.com/profile.php?id=105096909089200&cah=2&rwtsid=ATFlokwkz4zUZhT24&hr=1&wtsid=rdr_0D40nlgHkNAXL9ino" target="_blank">فيسبوك</a>
+      <a href="https://www.instagram.com/lamza.official?igsh=YmEzNW4wa3hhbTE1" target="_blank">انستغرام</a>
+    </div>
+
+    <p class="copy">جميع الحقوق محفوظة لدى LAMZA 2026</p>
+  </footer>
+
+<script>
+// رابط Google Sheets CSV ديالك
+const SHEET_URL = "https://docs.google.com/spreadsheets/d/1TUXFBkYBHF66of7faOrPdoVbD-HHdPI0VjfzBtupMi8/gviz/tq?tqx=out:csv";
+const WHATSAPP = "212611733175";
+
+function createCard(المنتج, الثمن, الصورة, الوصف) {
+  return `
+    <div class="card">
+      <img src="${الصورة}" alt="${المنتج}" onerror="this.src='https://via.placeholder.com/400x500/000/fff?text=صورة'">
+      <div class="card-info">
+        <h3>${المنتج}</h3>
+        <div class="price">${الثمن} درهم</div>
+        <a href="https://wa.me/${WHATSAPP}?text=السلام عليكم بغيت نطلب: ${المنتج}" class="btn-wa">اطلب عبر الواتساب</a>
+      </div>
+    </div>`;
+}
+
+fetch(SHEET_URL)
+  .then(res => res.text())
+  .then(csv => {
+    const rows = csv.split('\n').slice(1);
+    const chefs = document.getElementById('chefs');
+    const doctors = document.getElementById('doctors');
+    const master = document.getElementById('masterchef');
+    
+    chefs.innerHTML = '';
+    doctors.innerHTML = '';
+    master.innerHTML = '';
+    
+    rows.forEach(row => {
+      if(!row.trim()) return;
+      const cols = row.split(',').map(c => c.replace(/"/g,''));
+      const [القسم, المنتج, الثمن, الصورة, الوصف] = cols;
+      if(!المنتج) return;
+      
+      if(القسم === "طهات") chefs.innerHTML += createCard(المنتج, الثمن, الصورة, الوصف);
+      if(القسم === "اطباء") doctors.innerHTML += createCard(المنتج, الثمن, الصورة, الوصف);
+      if(القسم === "شاف") master.innerHTML += createCard(المنتج, الثمن, الصورة, الوصف);
+    });
+    
+    if(chefs.innerHTML === "") chefs.innerHTML = '<div class="loading">مازال ما زدتي منتجات فـ قسم الطهات</div>';
+    if(doctors.innerHTML === "") doctors.innerHTML = '<div class="loading">مازال ما زدتي منتجات فـ قسم الأطباء</div>';
+    if(master.innerHTML === "") master.innerHTML = '<div class="loading">مازال ما زدتي منتجات فـ قسم مستر شاف</div>';
+  })
+  .catch(err => {
+    console.log("خطأ:", err);
+    document.querySelectorAll('.loading').forEach(el => el.innerHTML = 'خطأ فالتحميل. تأكد من "نشر على الويب" فالشيت');
+  });
+</script>
+</body>
+  </html>
